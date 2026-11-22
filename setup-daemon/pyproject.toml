@@ -7,6 +7,5 @@ dependencies = ["flask"]
 [project.scripts]
 picotron-setup-daemon = "app:main"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["routes*"]
+[tool.setuptools]
+py-modules = ["app"]
