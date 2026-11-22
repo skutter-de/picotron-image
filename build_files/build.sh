@@ -16,8 +16,12 @@ dnf5 install -y \
     python3-flask
 
 ### Install picotron-daemon
-# picopod is not in the Fedora repos — install via pip system-wide
-pip install --prefix=/usr /ctx/daemon/
+# picopod is not in the Fedora repos — install via pip system-wide.
+# Copy to /tmp first: pip writes egg-info back to the source dir,
+# which fails on the read-only /ctx bind mount.
+cp -r /ctx/daemon /tmp/daemon
+pip install --prefix=/usr /tmp/daemon/
+rm -rf /tmp/daemon
 
 ### Make scripts executable
 chmod 755 \
