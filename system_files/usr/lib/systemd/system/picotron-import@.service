@@ -1,0 +1,12 @@
+[Unit]
+Description=Picotron-Installation von %i importieren
+After=local-fs.target
+# Verhindert Doppelstart wenn mehrere Partitionen gleichzeitig erscheinen
+ConditionPathExists=!/var/picotron/.imported
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/picotron-import %i
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=picotron-import

@@ -1,0 +1,35 @@
+#!/bin/bash
+set -euo pipefail
+
+DEVICE="/dev/${1:?Kein Gerät angegeben}"
+MOUNT_DIR="/run/picotron-import"
+INSTALL_DIR="/var/picotron"
+MARKER="$INSTALL_DIR/.imported"
+
+if [ -f "$MARKER" ]; then
+    echo "Picotron bereits installiert, überspringe $DEVICE"
+    exit 0
+fi
+
+cleanup() {
+    umount "$MOUNT_DIR" 2>/dev/null || true
+    rmdir "$MOUNT_DIR" 2>/dev/null || true
+}
+trap cleanup EXIT
+
+mkdir -p "$MOUNT_DIR"
+mount -o ro "$DEVICE" "$MOUNT_DIR"
+
+# Validierung: Picotron-Binary muss vorhanden sein
+if [ ! -f "$MOUNT_DIR/picotron" ]; then
+    echo "Kein Picotron-Binary auf $DEVICE gefunden, überspringe"
+    exit 1
+fi
+
+echo "Importiere Picotron-Daten von $DEVICE nach $INSTALL_DIR ..."
+mkdir -p "$INSTALL_DIR"
+cp -a "$MOUNT_DIR"/. "$INSTALL_DIR/"
+chmod 755 "$INSTALL_DIR/picotron"
+
+touch "$MARKER"
+echo "Import abgeschlossen"
