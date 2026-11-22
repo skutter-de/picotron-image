@@ -17,10 +17,13 @@ dnf5 install -y \
 ### Skripte ausführbar machen
 chmod 755 \
     /usr/bin/picotron-import \
-    /usr/bin/picotron-session
+    /usr/bin/picotron-session \
+    /usr/bin/picotron-daemon
 
 ### Services aktivieren
 systemctl enable lightdm.service
+# picotron-daemon für alle User beim Login starten
+systemctl --global enable picotron-daemon.service
 
 # GDM/SDDM/greetd deaktivieren falls vorhanden
 systemctl disable gdm.service 2>/dev/null || true

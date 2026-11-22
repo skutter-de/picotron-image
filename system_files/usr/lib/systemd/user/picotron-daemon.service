@@ -1,0 +1,12 @@
+[Unit]
+Description=Picotron Control Center Daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/picotron-daemon
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
