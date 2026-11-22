@@ -12,17 +12,20 @@ dnf5 install -y \
     pipewire \
     pipewire-pulseaudio \
     wireplumber \
+    python3-pip \
     python3-flask
+
+### picotron-daemon installieren
+# picopod ist nicht im Fedora-Repo — via pip system-wide
+pip install --prefix=/usr /ctx/daemon/
 
 ### Skripte ausführbar machen
 chmod 755 \
     /usr/bin/picotron-import \
-    /usr/bin/picotron-session \
-    /usr/bin/picotron-daemon
+    /usr/bin/picotron-session
 
 ### Services aktivieren
 systemctl enable lightdm.service
-# picotron-daemon für alle User beim Login starten
 systemctl --global enable picotron-daemon.service
 
 # GDM/SDDM/greetd deaktivieren falls vorhanden

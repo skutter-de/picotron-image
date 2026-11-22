@@ -1,0 +1,15 @@
+[project]
+name = "picotron-flask-daemon"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "flask",
+    "picopod",
+]
+
+[project.scripts]
+picotron-daemon = "run:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["routes*"]
