@@ -1,7 +1,7 @@
 [Unit]
-Description=Picotron-Installation von %i importieren
+Description=Import Picotron installation from %i
 After=local-fs.target
-# Verhindert Doppelstart wenn mehrere Partitionen gleichzeitig erscheinen
+# Prevent double-start if multiple partitions appear at the same time
 ConditionPathExists=!/var/picotron/.imported
 
 [Service]
