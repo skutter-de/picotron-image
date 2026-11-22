@@ -35,7 +35,8 @@ echo "Picotron binary found, starting setup wizard."
 
 # Install setup cart into Picotron's drive directory for the root user
 mkdir -p "$CART_DST"
-cp "$CART_SRC/main.lua" "$CART_DST/main.lua"
+cp "$CART_SRC/main.lua"   "$CART_DST/main.lua"
+cp "$CART_SRC/worker.lua" "$CART_DST/worker.lua"
 
 # Run cage in a loop: after keymap selection, the daemon kills cage and writes
 # the chosen layout to KEYMAP_FILE; we restart cage with that layout applied.

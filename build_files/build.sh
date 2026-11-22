@@ -30,7 +30,8 @@ rm -rf /tmp/setup-daemon
 
 ### Install setup cart (used by picotron-initial-setup.service)
 mkdir -p /usr/share/picotron/setup.p64
-cp /ctx/setup-cart/main.lua /usr/share/picotron/setup.p64/main.lua
+cp /ctx/setup-cart/main.lua   /usr/share/picotron/setup.p64/main.lua
+cp /ctx/setup-cart/worker.lua /usr/share/picotron/setup.p64/worker.lua
 
 ### Install PTY bridge
 mkdir -p /usr/lib/picotron
