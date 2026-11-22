@@ -53,9 +53,7 @@ local function draw_welcome()
   draw_header("Welcome")
   center_text("Welcome to Picotron Linux", 65, C_FG)
   center_text("This wizard will help you set up your system.", 80, C_DIM)
-  center_text("You will need:", 105, C_DIM)
-  center_text("* A device with Picotron data (label: PICOTRON)", 118, 6)
-  center_text("* A username and password", 130, 6)
+  center_text("You will create a user account for this system.", 105, C_DIM)
   center_text("Press ENTER to begin", 200, C_ACC)
 end
 
@@ -117,7 +115,7 @@ function _update()
   poll_timer += 1
 
   if screen == "welcome" then
-    if keyp("return") then screen = "media" end
+    if keyp("return") then screen = "create_user" end
 
   elseif screen == "media" then
     if poll_timer % 120 == 1 then
