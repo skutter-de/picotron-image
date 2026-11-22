@@ -3,7 +3,7 @@ COPY build_files /
 COPY system_files /system_files
 COPY daemon /daemon
 
-FROM ghcr.io/ublue-os/base-atomic:stable
+FROM ghcr.io/ublue-os/base-main:gts
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
