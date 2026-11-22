@@ -1,0 +1,36 @@
+#!/bin/bash
+# Picotron first-boot setup: starts the setup daemon and runs Picotron
+# with the setup cart inside a cage Wayland compositor.
+# Runs before display-manager.service (ConditionPathExists=!/var/lib/picotron/initial-setup-done).
+
+set -e
+
+PICOTRON_BIN="/var/picotron/picotron"
+CART_SRC="/usr/share/picotron/setup.p64"
+CART_DST="/root/.lexaloffle/Picotron/drive/desktop/setup.p64"
+DONE_MARKER="/var/lib/picotron/initial-setup-done"
+
+# Start the setup daemon
+picotron-setup-daemon &
+DAEMON_PID=$!
+trap "kill $DAEMON_PID 2>/dev/null || true" EXIT
+
+# Wait for daemon to come up
+for i in $(seq 1 20); do
+    curl -sf http://127.0.0.1:2425/setup/picotron_status >/dev/null 2>&1 && break
+    sleep 0.5
+done
+
+# Wait for Picotron binary (user inserts PICOTRON-labeled media, udev imports it)
+echo "Waiting for Picotron binary at ${PICOTRON_BIN}..."
+while [ ! -x "$PICOTRON_BIN" ]; do
+    sleep 2
+done
+echo "Picotron binary found, starting setup wizard."
+
+# Install setup cart into Picotron's drive directory for the root user
+mkdir -p "$CART_DST"
+cp "$CART_SRC/main.lua" "$CART_DST/main.lua"
+
+# Run the setup cart inside a fullscreen Wayland kiosk session
+exec cage -- "$PICOTRON_BIN" /desktop/setup.p64/main.lua

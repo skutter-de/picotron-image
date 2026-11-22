@@ -1,0 +1,14 @@
+[Unit]
+Description=Picotron Initial Setup Wizard
+Before=display-manager.service
+ConditionPathExists=!/var/lib/picotron/initial-setup-done
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/picotron-initial-setup
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=picotron-initial-setup
+
+[Install]
+WantedBy=multi-user.target

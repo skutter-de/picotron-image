@@ -2,6 +2,8 @@ FROM scratch AS ctx
 COPY build_files /
 COPY system_files /system_files
 COPY daemon /daemon
+COPY setup-daemon /setup-daemon
+COPY setup-cart /setup-cart
 
 FROM ghcr.io/ublue-os/base-main:gts
 
