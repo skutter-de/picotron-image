@@ -5,33 +5,24 @@ set -ouex pipefail
 cp -avf /ctx/system_files/. /
 
 ### Pakete installieren
-
 dnf5 install -y \
     cage \
-    greetd \
+    lightdm \
+    lightdm-gtk-greeter \
     pipewire \
     pipewire-pulseaudio \
     wireplumber \
-    python3-gobject \
-    python3-flask \
-    python3-flask-login
+    python3-flask
 
 ### Skripte ausführbar machen
 chmod 755 \
     /usr/bin/picotron-import \
-    /usr/bin/picotron-wait-splash \
-    /usr/bin/picotron-greeter
+    /usr/bin/picotron-session
 
 ### Services aktivieren
-# greetd als Display Manager
-systemctl enable greetd.service
+systemctl enable lightdm.service
 
-# Picotron-Import-Trigger braucht keinen eigenen Enable —
-# der Service wird von udev on-demand gestartet.
-
-### GDM/SDDM falls vorhanden deaktivieren (base-atomic hat keines, aber sicher ist sicher)
+# GDM/SDDM/greetd deaktivieren falls vorhanden
 systemctl disable gdm.service 2>/dev/null || true
 systemctl disable sddm.service 2>/dev/null || true
-
-### greeter-User anlegen (via sysusers.d, wird bei erstem Boot ausgeführt)
-# Die sysusers.d-Datei liegt bereits in system_files/usr/lib/sysusers.d/
+systemctl disable greetd.service 2>/dev/null || true

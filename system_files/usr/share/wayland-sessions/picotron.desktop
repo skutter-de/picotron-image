@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=Picotron
+Comment=Picotron Fantasy Workstation
+Exec=/usr/bin/picotron-session
+Type=Application

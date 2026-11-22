@@ -1,0 +1,8 @@
+#!/bin/bash
+# Startet PipeWire + Picotron in einer cage-Wayland-Session.
+# Wird von LightDM als User-Session aufgerufen.
+
+# PipeWire als User-Service starten (falls nicht schon via systemd --user aktiv)
+systemctl --user start pipewire.service pipewire-pulse.service wireplumber.service 2>/dev/null || true
+
+exec cage -- /var/picotron/picotron
