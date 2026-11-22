@@ -32,17 +32,29 @@ rm -rf /tmp/setup-daemon
 mkdir -p /usr/share/picotron/setup.p64
 cp /ctx/setup-cart/main.lua /usr/share/picotron/setup.p64/main.lua
 
+### Install PTY bridge
+mkdir -p /usr/lib/picotron
+cp /ctx/pty_bridge.py /usr/lib/picotron/pty_bridge.py
+
+### Install host terminal cart (placed in each user's Picotron desktop on first login)
+mkdir -p /usr/share/picotron/host-terminal.p64/gfx
+cp /ctx/host-terminal.p64/main.lua   /usr/share/picotron/host-terminal.p64/
+cp /ctx/host-terminal.p64/worker.lua /usr/share/picotron/host-terminal.p64/
+cp /ctx/host-terminal.p64/gfx/0.gfx /usr/share/picotron/host-terminal.p64/gfx/
+
 ### Make scripts executable
 chmod 755 \
     /usr/bin/picotron-import \
     /usr/bin/picotron-initial-setup \
-    /usr/bin/picotron-session
+    /usr/bin/picotron-session \
+    /usr/bin/picotron-pty-bridge
 
 ### Enable services
 systemctl enable lightdm.service
 systemctl enable picotron-initial-setup.service
-# Start picotron-daemon for all users on login
+# Start picotron-daemon and pty-bridge for all users on login
 systemctl --global enable picotron-daemon.service
+systemctl --global enable picotron-pty-bridge.service
 
 # Disable other display managers if present
 systemctl disable gdm.service 2>/dev/null || true

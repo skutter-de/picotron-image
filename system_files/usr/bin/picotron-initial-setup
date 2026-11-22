@@ -2,6 +2,10 @@
 # Picotron first-boot setup: starts the setup daemon and runs Picotron
 # with the setup cart inside a cage Wayland compositor.
 # Runs before display-manager.service (ConditionPathExists=!/var/lib/picotron/initial-setup-done).
+#
+# After the user picks a keyboard layout, the daemon kills cage and writes
+# the layout to KEYMAP_FILE. This script then restarts cage with the correct
+# XKB_DEFAULT_LAYOUT so text input on the create-account screen is correct.
 
 set -e
 
@@ -9,15 +13,16 @@ PICOTRON_BIN="/var/picotron/picotron"
 CART_SRC="/usr/share/picotron/setup.p64"
 CART_DST="/root/.lexaloffle/Picotron/drive/desktop/setup.p64"
 DONE_MARKER="/var/lib/picotron/initial-setup-done"
+KEYMAP_FILE="/tmp/picotron-setup-keymap"
 
-# Start the setup daemon
+# Start the setup daemon (keeps running across cage restarts)
 picotron-setup-daemon &
 DAEMON_PID=$!
 trap "kill $DAEMON_PID 2>/dev/null || true" EXIT
 
 # Wait for daemon to come up
 for i in $(seq 1 20); do
-    curl -sf http://127.0.0.1:2425/setup/picotron_status >/dev/null 2>&1 && break
+    curl -sf http://127.0.0.1:2425/setup/state >/dev/null 2>&1 && break
     sleep 0.5
 done
 
@@ -32,5 +37,10 @@ echo "Picotron binary found, starting setup wizard."
 mkdir -p "$CART_DST"
 cp "$CART_SRC/main.lua" "$CART_DST/main.lua"
 
-# Run the setup cart inside a fullscreen Wayland kiosk session
-exec cage -- "$PICOTRON_BIN" /desktop/setup.p64/main.lua
+# Run cage in a loop: after keymap selection, the daemon kills cage and writes
+# the chosen layout to KEYMAP_FILE; we restart cage with that layout applied.
+while [ ! -f "$DONE_MARKER" ]; do
+    XKB_LAYOUT="$(cat "$KEYMAP_FILE" 2>/dev/null || echo us)"
+    XKB_DEFAULT_LAYOUT="$XKB_LAYOUT" \
+        cage -- "$PICOTRON_BIN" /desktop/setup.p64/main.lua || true
+done

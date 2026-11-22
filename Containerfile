@@ -4,6 +4,8 @@ COPY system_files /system_files
 COPY daemon /daemon
 COPY setup-daemon /setup-daemon
 COPY setup-cart /setup-cart
+COPY host-terminal.p64 /host-terminal.p64
+COPY pty_bridge.py /pty_bridge.py
 
 FROM ghcr.io/ublue-os/base-main:gts
 
