@@ -69,7 +69,7 @@ jobs:
       - name: Build Image
         id: build-image
         run: |
-          just build \
+          sudo -E $(command -v just) build \
             ${IMAGE_NAME} \
             ${DEFAULT_TAG}
 
